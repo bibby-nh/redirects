@@ -1,0 +1,41 @@
+#!/bin/bash
+# makes some messages, but occasionally (and intentionally) an error
+
+err() {
+  echo "${@}" >&2
+}
+
+join() {
+  local d=${1-} f=${2-}
+  if shift 2
+  then
+    printf %s "$f" "${@/#/$d}"
+  fi
+  echo
+}
+
+mkmsg() {
+  # fake categories
+  local category=('FOO' 'BAR' 'BAZ' 'QUX')
+  local pick=${category[$((RANDOM % ${#category}))]}
+  join $'\t' "${pick}" "${RANDOM}" "${1}" "$(date +%s%N)"
+}
+
+mkerr() {
+  #err $(jo error="Bad thing" input=$1)
+  err '{"error":"Bad thing", "input":'$1'}'
+}
+
+sim(){
+  if [ "$((RANDOM % 5))" -eq "0" ]
+  then
+    mkerr $1
+  else
+    mkmsg $2
+  fi
+}
+
+for i in $(seq 25)
+do
+  sim $i
+done

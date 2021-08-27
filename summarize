@@ -1,0 +1,20 @@
+#!/bin/bash
+
+declare -A cats
+while read line
+do
+  c=$(echo $line | cut -d ' ' -f 1)
+  [ ${cats[$c]+isset} ] && {
+    cats[$c]=$((cats[$c] + 1))
+  } || {
+    cats[$c]=1
+  }
+done
+
+
+for key in "${!cats[@]}"
+do
+    echo "Key:   ${key}"
+    echo "Value: ${cats[$key]}"
+    echo "------"
+done

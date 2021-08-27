@@ -1,0 +1,17 @@
+#!/bin/bash
+
+######
+# use: redirects command stdout_cmd stderr_cmd
+redirects()
+{
+  {
+    {
+      $1 3>&- |
+        $2 2>&3 3>&-
+    } 2>&1 >&4 4>&- |
+      $3 3>&- 4>&-
+  } 3>&2 4>&1
+}
+
+
+redirects ./mkmsgs ./summarize ./handle_err
